@@ -9,15 +9,16 @@ public class MenuCamControl : MonoBehaviour
     public Transform currentMount;
     public float speedFactor = 0.01f;
 
+    // Trigger 
+    public GameObject startCamera;
+    public GameObject playCamera;
 
-    // public Camera[] cameras;
-    // private int currentCameraIndex = 0;
+    private bool hasActivated;
 
 
-    // Start is called before the first frame update
     void Start()
     {
-        //currentMount = 
+        Debug.Log("Current Camera: Start Camera" );
     }
 
     // Update is called once per frame
@@ -31,6 +32,18 @@ public class MenuCamControl : MonoBehaviour
     public void SetMount(Transform newMount)
     {
         currentMount = newMount;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("MainCamera") && !hasActivated)
+        {
+            startCamera.SetActive(false);
+            playCamera.SetActive(true);
+            hasActivated = true;
+
+            Debug.Log("Camera switch triggered! StartCamera deactivated. PlayCamera activated.");
+        }
     }
 
 }
