@@ -21,7 +21,7 @@ public class MenuCamControl : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Current Camera: Start Camera" );
+        Debug.Log("Current Camera: " + this.gameObject.name);
         
     }
 
@@ -50,34 +50,61 @@ public class MenuCamControl : MonoBehaviour
 
 
 
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("MainMount"))
-        {
+    // public void OnTriggerEnter(Collider other)
+    // {
+    //     if (other.CompareTag("MainMount"))
+    //     {
+    //         ActivateCanvas(mainMenuCanvas);
+    //         DeactivateCanvas(loginCanvas);
+    //         DeactivateCanvas(playCanvas);
+
+    //         Debug.Log("Main Menu activated.");
+    //     }
+    //     else if (other.CompareTag("LoginMount"))
+    //     {
+    //         DeactivateCanvas(mainMenuCanvas);
+    //         ActivateCanvas(loginCanvas);
+    //         DeactivateCanvas(playCanvas);
+
+    //         Debug.Log("Login Menu activated.");
+    //     }
+    //     else if (other.CompareTag("PlayMount"))
+    //     {
+    //         DeactivateCanvas(mainMenuCanvas);
+    //         DeactivateCanvas(loginCanvas);
+    //         ActivateCanvas(playCanvas);
+
+    //         Debug.Log("Login Menu activated.");
+    //     }
+        
+    // }
+
+    public void UpdateUI(string UIName){
+        if (UIName == "MainMount"){
             ActivateCanvas(mainMenuCanvas);
             DeactivateCanvas(loginCanvas);
             DeactivateCanvas(playCanvas);
 
             Debug.Log("Main Menu activated.");
         }
-        else if (other.CompareTag("LoginMount"))
-        {
+        else if (UIName == "LoginMount"){
             DeactivateCanvas(mainMenuCanvas);
             ActivateCanvas(loginCanvas);
             DeactivateCanvas(playCanvas);
 
             Debug.Log("Login Menu activated.");
-        }
-        else if (other.CompareTag("PlayMount"))
+        } 
+        else if (UIName == "PlayMount")
         {
             DeactivateCanvas(mainMenuCanvas);
             DeactivateCanvas(loginCanvas);
             ActivateCanvas(playCanvas);
 
-            Debug.Log("Login Menu activated.");
+            Debug.Log("Play Interface activated.");
         }
-        
+
     }
+
 
     // Canvas Management -- Show or hide canvas 
         private void ActivateCanvas(GameObject canvas)
@@ -95,5 +122,13 @@ public class MenuCamControl : MonoBehaviour
             canvas.SetActive(false);
         }
     }
+
+    	void OnTriggerEnter(Collider other)
+	{
+        Debug.Log("-------------- Camera Trigger activated. ----- \nCurrent object: " + this.tag);
+
+
+        
+	}
 
 }

@@ -1309,6 +1309,7 @@ GameObject:
   - component: {fileID: 260887541}
   - component: {fileID: 260887540}
   - component: {fileID: 260887542}
+  - component: {fileID: 260887543}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -1416,7 +1417,28 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
+--- !u!65 &260887543
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260887538}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 1
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &273887214
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2040,14 +2062,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 355096900}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22ffe0786f95c9646aa01aeed4a46212, type: 3}
+  m_Script: {fileID: 11500000, guid: 467fb875cb6585f4288de40fc197ff9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMount: {fileID: 355096901}
-  speedFactor: 0.01
-  mainMenuCanvas: {fileID: 0}
-  loginCanvas: {fileID: 0}
-  playCanvas: {fileID: 0}
+  menuControl: {fileID: 2013912843}
 --- !u!1 &361811997
 GameObject:
   m_ObjectHideFlags: 0
@@ -5556,6 +5574,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1055728781}
+  - component: {fileID: 1055728782}
+  - component: {fileID: 1055728783}
   m_Layer: 0
   m_Name: LoginMount
   m_TagString: Untagged
@@ -5578,6 +5598,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 361811998}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1055728782
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055728780}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1055728783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055728780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 467fb875cb6585f4288de40fc197ff9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuControl: {fileID: 2013912843}
 --- !u!1 &1068745276
 GameObject:
   m_ObjectHideFlags: 0
@@ -6206,7 +6260,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2013912843}
         m_TargetAssemblyTypeName: MenuCamControl, Assembly-CSharp
         m_MethodName: SetMount
         m_Mode: 2
@@ -8250,9 +8304,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1454344405}
+  - component: {fileID: 1454344406}
+  - component: {fileID: 1454344407}
   m_Layer: 0
   m_Name: MainMount
-  m_TagString: Untagged
+  m_TagString: MainMount
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8272,6 +8328,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 567096774}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1454344406
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454344404}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1454344407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1454344404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 467fb875cb6585f4288de40fc197ff9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuControl: {fileID: 2013912843}
 --- !u!1001 &1460768245
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10140,7 +10230,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 164.92534, y: -34.661537}
+  m_AnchoredPosition: {x: -224.00467, y: -34.661537}
   m_SizeDelta: {x: 400, y: 118.3811}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1788889376
@@ -10163,7 +10253,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Created by Carlos Guzman Ramirez 2024\nOriginal game created by UNO \xA9"
+  m_text: 'Login
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -10472,7 +10564,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 164.93, y: 28.073}
+  m_AnchoredPosition: {x: -224, y: 28.073}
   m_SizeDelta: {x: 400, y: 243.85}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1852293324
@@ -11404,12 +11496,12 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 2013912843}
         m_TargetAssemblyTypeName: MenuCamControl, Assembly-CSharp
-        m_MethodName: setMount
+        m_MethodName: SetMount
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgument: {fileID: 355096901}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -11466,7 +11558,7 @@ GameObject:
   - component: {fileID: 2013912843}
   m_Layer: 0
   m_Name: CameraGuide
-  m_TagString: Untagged
+  m_TagString: CameraGuide
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
