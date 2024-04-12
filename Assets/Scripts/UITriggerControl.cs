@@ -11,16 +11,9 @@ public class UIControl : MonoBehaviour
 	// When an object enters the finish zone, let the
 	// game manager know that the current game has ended
 
-        void Start()
-    {
-        Debug.Log("--------- UI Control ---------- \nmenu control: "+ this.tag );
-        
-        
-    }
-
 	void OnTriggerEnter(Collider other)
 	{
-        Debug.Log("-------------- Mount Trigger activated. ----- \nCurrent object: " + this.tag);
+        Debug.Log("-------------- Mount Trigger activated. ----- \nCurrent object: " + this.gameObject.name);
 
 		menuControl.UpdateUI(this.gameObject.name);        
 	}

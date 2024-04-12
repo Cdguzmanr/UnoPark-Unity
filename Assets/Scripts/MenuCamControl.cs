@@ -14,6 +14,7 @@ public class MenuCamControl : MonoBehaviour
     public GameObject mainMenuCanvas;
     public GameObject loginCanvas;
     public GameObject playCanvas;
+    public GameObject registerCanvas;
 
 
     private bool hasActivated;
@@ -45,45 +46,12 @@ public class MenuCamControl : MonoBehaviour
         Debug.Log("All Canvas Deactivated.");
     }
 
-
-
-
-
-
-    // public void OnTriggerEnter(Collider other)
-    // {
-    //     if (other.CompareTag("MainMount"))
-    //     {
-    //         ActivateCanvas(mainMenuCanvas);
-    //         DeactivateCanvas(loginCanvas);
-    //         DeactivateCanvas(playCanvas);
-
-    //         Debug.Log("Main Menu activated.");
-    //     }
-    //     else if (other.CompareTag("LoginMount"))
-    //     {
-    //         DeactivateCanvas(mainMenuCanvas);
-    //         ActivateCanvas(loginCanvas);
-    //         DeactivateCanvas(playCanvas);
-
-    //         Debug.Log("Login Menu activated.");
-    //     }
-    //     else if (other.CompareTag("PlayMount"))
-    //     {
-    //         DeactivateCanvas(mainMenuCanvas);
-    //         DeactivateCanvas(loginCanvas);
-    //         ActivateCanvas(playCanvas);
-
-    //         Debug.Log("Login Menu activated.");
-    //     }
-        
-    // }
-
     public void UpdateUI(string UIName){
         if (UIName == "MainMount"){
             ActivateCanvas(mainMenuCanvas);
             DeactivateCanvas(loginCanvas);
             DeactivateCanvas(playCanvas);
+            DeactivateCanvas(registerCanvas);
 
             Debug.Log("Main Menu activated.");
         }
@@ -91,18 +59,28 @@ public class MenuCamControl : MonoBehaviour
             DeactivateCanvas(mainMenuCanvas);
             ActivateCanvas(loginCanvas);
             DeactivateCanvas(playCanvas);
+            DeactivateCanvas(registerCanvas);
 
             Debug.Log("Login Menu activated.");
         } 
+        else if (UIName == "RegisterMount")
+        {
+            DeactivateCanvas(mainMenuCanvas);
+            DeactivateCanvas(loginCanvas);
+            DeactivateCanvas(playCanvas);
+            ActivateCanvas(registerCanvas);
+
+            Debug.Log("Register Menu activated.");
+        }
         else if (UIName == "PlayMount")
         {
             DeactivateCanvas(mainMenuCanvas);
             DeactivateCanvas(loginCanvas);
             ActivateCanvas(playCanvas);
+            DeactivateCanvas(registerCanvas);
 
             Debug.Log("Play Interface activated.");
         }
-
     }
 
 
