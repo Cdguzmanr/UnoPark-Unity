@@ -358,6 +358,7 @@
 "Assets/Polytope Studio/Lowpoly_Demos/Environment_Free/Helpers/PlayerMovement.cs"
 "Assets/Scripts/Card.cs"
 "Assets/Scripts/MenuCamControl.cs"
+"Assets/Scripts/UITriggerControl.cs"
 -langversion:9.0
 
 /deterministic
