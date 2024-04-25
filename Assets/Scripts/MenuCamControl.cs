@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class MenuCamControl : MonoBehaviour
@@ -13,16 +14,18 @@ public class MenuCamControl : MonoBehaviour
     // Trigger - UI Canvas Control
     public GameObject mainMenuCanvas;
     public GameObject loginCanvas;
-    public GameObject playCanvas;
     public GameObject registerCanvas;
+    public GameObject playCanvas;
+    public GameObject pauseCanvas;
+    public GameObject playersCanvas;
+    public GameObject winnerCanvas;
 
-
-    private bool hasActivated;
-
+    public GameObject[] toggles = new GameObject[5]; // Set the AI Players from Menu
 
     void Start()
     {
-        Debug.Log("Current Camera: " + this.gameObject.name);
+        DeactivateAllCanvas();
+        //Debug.Log("Current Camera: " + this.gameObject.name);
         
     }
 
@@ -36,49 +39,43 @@ public class MenuCamControl : MonoBehaviour
 
     public void SetMount(Transform newMount)
     {
-        Debug.Log("Menu Camera Control initialized.");
-
+        DeactivateAllCanvas();
         currentMount = newMount;
-        DeactivateCanvas(mainMenuCanvas);
-        DeactivateCanvas(loginCanvas);
-        DeactivateCanvas(playCanvas);
-
-        Debug.Log("All Canvas Deactivated.");
     }
 
     public void UpdateUI(string UIName){
         if (UIName == "MainMount"){
+
+            DeactivateAllCanvas();
             ActivateCanvas(mainMenuCanvas);
-            DeactivateCanvas(loginCanvas);
-            DeactivateCanvas(playCanvas);
-            DeactivateCanvas(registerCanvas);
 
             Debug.Log("Main Menu activated.");
         }
         else if (UIName == "LoginMount"){
-            DeactivateCanvas(mainMenuCanvas);
+            DeactivateAllCanvas();
             ActivateCanvas(loginCanvas);
-            DeactivateCanvas(playCanvas);
-            DeactivateCanvas(registerCanvas);
-
+            
             Debug.Log("Login Menu activated.");
         } 
         else if (UIName == "RegisterMount")
         {
-            DeactivateCanvas(mainMenuCanvas);
-            DeactivateCanvas(loginCanvas);
-            DeactivateCanvas(playCanvas);
+            DeactivateAllCanvas();
             ActivateCanvas(registerCanvas);
 
             Debug.Log("Register Menu activated.");
-        }
+        } 
+        else if (UIName == "PlayersMount")
+        {
+            DeactivateAllCanvas();
+            ActivateCanvas(playersCanvas);
+
+            Debug.Log("Players Menu activated.");
+        } 
+
         else if (UIName == "PlayMount")
         {
-            DeactivateCanvas(mainMenuCanvas);
-            DeactivateCanvas(loginCanvas);
+            DeactivateAllCanvas(); 
             ActivateCanvas(playCanvas);
-            DeactivateCanvas(registerCanvas);
-
             Debug.Log("Play Interface activated.");
         }
     }
@@ -101,12 +98,43 @@ public class MenuCamControl : MonoBehaviour
         }
     }
 
+    private void DeactivateAllCanvas()
+    {
+        DeactivateCanvas(mainMenuCanvas);
+        DeactivateCanvas(loginCanvas);
+        DeactivateCanvas(registerCanvas);
+        DeactivateCanvas(playCanvas);
+        DeactivateCanvas(pauseCanvas);
+        DeactivateCanvas(playersCanvas);
+        DeactivateCanvas(winnerCanvas);
+        Debug.Log("--- All Canvas Deactivated ---");
+    }
+
+
+    public void GoHome(){
+        SetMount(GameObject.Find("MainMount").transform);
+    }
+
     	void OnTriggerEnter(Collider other)
 	{
         Debug.Log("-------------- Camera Trigger activated. ----- \nCurrent object: " + this.tag);
-
-
         
 	}
+
+
+    // Game Management -------------------------------------------------------------
+
+    public void play() { //finds the toggle that is on to decide how many ai players there will be
+        for (int i = 0; i < 5; i++) {
+            if (toggles [i].GetComponent<Toggle> ().isOn) {
+                Control.numbOfAI = i + 1;
+                break;
+            }				
+        }
+		
+        // Starts the game  
+        Control.gameStarted = true;
+	}
+    
 
 }
