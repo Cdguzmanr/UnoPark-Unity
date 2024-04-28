@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 public class MenuCamControl : MonoBehaviour
 {
     // Camera Movement 
+    public Control controlInstance;
     public Transform currentMount;
     public float speedFactor = 0.01f;
 
@@ -20,7 +22,7 @@ public class MenuCamControl : MonoBehaviour
     public GameObject playersCanvas;
     public GameObject winnerCanvas;
 
-    public GameObject[] toggles = new GameObject[5]; // Set the AI Players from Menu
+    public GameObject[] toggles = new GameObject[4]; // Set the AI Players from Menu
 
     void Start()
     {
@@ -37,34 +39,35 @@ public class MenuCamControl : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, currentMount.rotation, speedFactor);
     }
 
+
     public void SetMount(Transform newMount)
     {
         DeactivateAllCanvas();
         currentMount = newMount;
     }
-
+    
     public void UpdateUI(string UIName){
-        if (UIName == "MainMount"){
+        if (UIName == "MainMount" && currentMount == GameObject.Find("MainMount").transform){
 
             DeactivateAllCanvas();
             ActivateCanvas(mainMenuCanvas);
 
             Debug.Log("Main Menu activated.");
         }
-        else if (UIName == "LoginMount"){
+        else if (UIName == "LoginMount" && currentMount == GameObject.Find("LoginMount").transform){
             DeactivateAllCanvas();
             ActivateCanvas(loginCanvas);
             
             Debug.Log("Login Menu activated.");
         } 
-        else if (UIName == "RegisterMount")
+        else if (UIName == "RegisterMount" && currentMount == GameObject.Find("RegisterMount").transform)
         {
             DeactivateAllCanvas();
             ActivateCanvas(registerCanvas);
 
             Debug.Log("Register Menu activated.");
         } 
-        else if (UIName == "PlayersMount")
+        else if (UIName == "PlayersMount" && currentMount == GameObject.Find("PlayersMount").transform)
         {
             DeactivateAllCanvas();
             ActivateCanvas(playersCanvas);
@@ -72,11 +75,14 @@ public class MenuCamControl : MonoBehaviour
             Debug.Log("Players Menu activated.");
         } 
 
-        else if (UIName == "PlayMount")
+        else if (UIName == "PlayMount" && currentMount == GameObject.Find("PlayMount").transform)
         {
             DeactivateAllCanvas(); 
             ActivateCanvas(playCanvas);
             Debug.Log("Play Interface activated.");
+            
+            play();
+            
         }
     }
 
@@ -117,7 +123,7 @@ public class MenuCamControl : MonoBehaviour
 
     	void OnTriggerEnter(Collider other)
 	{
-        Debug.Log("-------------- Camera Trigger activated. ----- \nCurrent object: " + this.tag);
+        //Debug.Log("-------------- Camera Trigger activated. ----- \nCurrent object: " + this.tag);
         
 	}
 
@@ -125,14 +131,17 @@ public class MenuCamControl : MonoBehaviour
     // Game Management -------------------------------------------------------------
 
     public void play() { //finds the toggle that is on to decide how many ai players there will be
-        for (int i = 0; i < 5; i++) {
-            if (toggles [i].GetComponent<Toggle> ().isOn) {
-                Control.numbOfAI = i + 1;
+        for (int i = 0; i <= 4; i++) {
+            if (toggles[i].GetComponent<Toggle>().isOn) {
+                Control.numbOfAI = i+1;
+                Debug.Log("Number of AI Players: " + (i+1) );
                 break;
             }				
         }
 		
+    
         // Starts the game  
+        controlInstance.StartGame();
         Control.gameStarted = true;
 	}
     

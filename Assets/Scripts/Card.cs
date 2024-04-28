@@ -19,15 +19,35 @@ public class Card : MonoBehaviour {
 	string color;
 	GameObject cardObj;
 
+
+	
+
 	public Card (int numb, string color, GameObject obj) { //defines the object
 		number = numb;
 		this.color = color;
 		cardObj = obj;
 	}
+
+	// Override ToString method
+    public override string ToString()
+    {
+        return $"Card: {color} {number}";
+    }
+
+	public GameObject loadCard(GameObject guideObject, Transform parent)
+	{
+		GameObject temp = loadCard(parent);
+		temp.transform.position = guideObject.transform.position;
+		return temp;
+	}
+
+
 	public GameObject loadCard(int x, int y, Transform parent) { //when ran, it tells where to load the card on the screen
-		GameObject temp = loadCard (parent);
+		Debug.Log("");
+		GameObject temp = loadCard(parent);
 		temp.transform.localPosition = new Vector2 (x, y+540);
 		return temp;
+
 	}
 	public GameObject loadCard(Transform parent) { //does all the setup for loading. Used if card doesn't need a specific position		
 		GameObject temp = Instantiate (cardObj);

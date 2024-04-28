@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\MenuCamControl.cs" />
     <Compile Include="Assets\Scripts\AiPlayer.cs" />
     <Compile Include="Assets\Scripts\HumanPlayer.cs" />
+    <Compile Include="Assets\Scripts\BroadcastService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -470,92 +471,92 @@
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.18f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ReportGeneratorMerged">
-      <HintPath>Library\PackageCache\com.unity.testtools.codecoverage@1.2.5\lib\ReportGenerator\ReportGeneratorMerged.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-      <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.1\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.SignalR.Client">
-      <HintPath>Assets\Resources\Microsoft.AspNetCore.SignalR.Client.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Logging">
-      <HintPath>Assets\Resources\Microsoft.Extensions.Logging.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Http.Connections.Client">
-      <HintPath>Assets\Resources\Microsoft.AspNetCore.Http.Connections.Client.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Threading.Channels">
-      <HintPath>Assets\Resources\System.Threading.Channels.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Options">
-      <HintPath>Assets\Resources\Microsoft.Extensions.Options.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-      <HintPath>Assets\Resources\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Http.Connections.Common">
-      <HintPath>Assets\Resources\Microsoft.AspNetCore.Http.Connections.Common.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.SignalR.Common">
-      <HintPath>Assets\Resources\Microsoft.AspNetCore.SignalR.Common.dll</HintPath>
+    <Reference Include="System.Text.Encodings.Web">
+      <HintPath>Assets\Resources\System.Text.Encodings.Web.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Connections.Abstractions">
       <HintPath>Assets\Resources\Microsoft.AspNetCore.Connections.Abstractions.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-      <HintPath>Assets\Resources\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Features">
-      <HintPath>Assets\Resources\Microsoft.Extensions.Features.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.Extensions.Primitives">
       <HintPath>Assets\Resources\Microsoft.Extensions.Primitives.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>Assets\Resources\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Diagnostics.DiagnosticSource">
-      <HintPath>Assets\Resources\System.Diagnostics.DiagnosticSource.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Text.Json">
-      <HintPath>Assets\Resources\System.Text.Json.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.ComponentModel.Annotations">
-      <HintPath>Assets\Resources\System.ComponentModel.Annotations.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.SignalR.Protocols.Json">
       <HintPath>Assets\Resources\Microsoft.AspNetCore.SignalR.Protocols.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.Extensions.Features">
+      <HintPath>Assets\Resources\Microsoft.Extensions.Features.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection">
+      <HintPath>Assets\Resources\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+      <HintPath>Assets\Resources\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>Assets\Resources\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ReportGeneratorMerged">
+      <HintPath>Library\PackageCache\com.unity.testtools.codecoverage@1.2.5\lib\ReportGenerator\ReportGeneratorMerged.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Connections.Common">
+      <HintPath>Assets\Resources\Microsoft.AspNetCore.Http.Connections.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options">
+      <HintPath>Assets\Resources\Microsoft.Extensions.Options.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Text.Json">
+      <HintPath>Assets\Resources\System.Text.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Connections.Client">
+      <HintPath>Assets\Resources\Microsoft.AspNetCore.Http.Connections.Client.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Diagnostics.DiagnosticSource">
+      <HintPath>Assets\Resources\System.Diagnostics.DiagnosticSource.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces">
       <HintPath>Assets\Resources\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
+      <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.1\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging">
+      <HintPath>Assets\Resources\Microsoft.Extensions.Logging.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.IO.Pipelines">
       <HintPath>Assets\Resources\System.IO.Pipelines.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Text.Encodings.Web">
-      <HintPath>Assets\Resources\System.Text.Encodings.Web.dll</HintPath>
+    <Reference Include="Microsoft.AspNetCore.SignalR.Common">
+      <HintPath>Assets\Resources\Microsoft.AspNetCore.SignalR.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>Assets\Resources\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations">
+      <HintPath>Assets\Resources\System.ComponentModel.Annotations.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.SignalR.Client">
+      <HintPath>Assets\Resources\Microsoft.AspNetCore.SignalR.Client.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Bcl.TimeProvider">
@@ -566,8 +567,8 @@
       <HintPath>Assets\Resources\Microsoft.AspNetCore.SignalR.Client.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection">
-      <HintPath>Assets\Resources\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    <Reference Include="System.Threading.Channels">
+      <HintPath>Assets\Resources\System.Threading.Channels.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard">

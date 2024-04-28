@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,10 +28,12 @@ public class HumanPlayer : MonoBehaviour, IPlayer {
 		foreach (Card x in handList) { //foreach card in hand
 			
 			GameObject temp = null;
-			if (GameObject.Find ("Control").GetComponent<Control> ().playerHand.transform.childCount > i) //is the card already there or does it need to be loaded
-				temp = GameObject.Find ("Control").GetComponent<Control> ().playerHand.transform.GetChild (i).gameObject;			
+			Control control = GameObject.Find ("Control").GetComponent<Control> ();
+
+			if (control.playerHand.transform.childCount > i) //is the card already there or does it need to be loaded
+				temp = control.playerHand.transform.GetChild (i).gameObject;			
 			else 
-				temp = x.loadCard (GameObject.Find ("Control").GetComponent<Control> ().playerHand.transform);
+				temp = x.loadCard(control.playerHand.transform);
 
 			
 			if (handList [i].Equals (Control.discard [Control.discard.Count - 1]) || handList [i].getNumb () >= 13) { //if the cards can be played
@@ -112,8 +115,11 @@ public class HumanPlayer : MonoBehaviour, IPlayer {
 		return name;
 	}
 	public int getCardsLeft() { //gets how many cards are left in the hand
-		Debug.Log ("-- Getting Human Player Cards -- ");
-		Debug.Log("Amount: " + handList.Count);
+		Debug.Log ("-- Getting " + this.name+ " Cards: " + handList.Count);		
+
+		string cardsLeft = string.Join(", ", handList.Select(card => card.ToString()).ToArray());
+		Debug.Log(cardsLeft);
+
 		return handList.Count;
 	}
 }

@@ -13,8 +13,10 @@ public class Control : MonoBehaviour {
 	public GameObject contentHolder;
 	public Text dialogueText;
 
-	public static GameObject discardPileObj;
 
+	public static GameObject discardPileObj; // Static object so can be called from anywhere
+
+	//public GameObject discardPileGuide; // Reference object for internal purposes
 	public GameObject regCardPrefab;
 	public GameObject skipCardPrefab;
 	public GameObject revrsCardPrefab;
@@ -23,7 +25,8 @@ public class Control : MonoBehaviour {
 
 	public GameObject[] colors = new GameObject[4];
 	string[] colorsMatch = new string[4]{"Yellow","Green","Blue","Red"};
-	public GameObject[] aiPlayers = new GameObject[5];
+
+	public GameObject[] playersView = new GameObject[5]; //
 	public GameObject colorText;
 	public GameObject deckGO;
 	public GameObject pauseCan;
@@ -39,89 +42,186 @@ public class Control : MonoBehaviour {
 	public static bool gameStarted;
 
 
-	public void StartGame () { //this does all the setup. Makes the human and ai players. sets the deck and gets the game ready
+	public void StartGame ()
+    { //this does all the setup. Makes the human and ai players. sets the deck and gets the game ready
 
-		Debug.Log(" *********** | Game Started | *********** ");
+        Debug.Log(" *********** | Game Started | *********** ");
+        BroadcastService.StartGame(); // Connect to SignalR
 
-		discard.Clear ();
-		deck.Clear ();
+        // Cleans old data
+        CleanOldGameData();
 
-		
-		Debug.Log("Amount of players start: " + players.Count);
+        // ---- Add Users ---- //
+        AddPlayers();
 
-		players.Add (new HumanPlayer ("You"));
+        // Activate Players Views
+        ActivatePlayers();
 
-		Debug.Log("Added human player: " + players[0].getName());
+        SetupDeck();
+        shuffle();
 
-		for (int i = 0; i < numbOfAI; i++) {
-			Debug.Log ("Adding player N" + i );
-			players.Add (new AiPlayer ("AI "+(i+1)));
-			Debug.Log("New Player: " + players[i].getName());
-		}
+        SetupInitialDiscardPile();
 
-		for (int i = 0; i < players.Count - 1; i++) {
-			Debug.Log("Activating Player: " + players[i].getName());
-			aiPlayers [i].SetActive (true);
-			Debug.Log("Succeed");
+        DealCardsToPlayers();
 
-			Debug.Log("Assigning player N" + i + " name: ");
-			aiPlayers[i].transform.Find("Name").GetComponent<Text>().text = players [i + 1].getName();
-			Debug.Log("Succeded");
-		}
+    }
 
-		for (int i = 0; i < 15; i++) { //setups the deck by making cards
-			for (int j = 0; j < 8; j++) {
-				switch (i) {
-					case 10:
-						deck.Add (new Card (i, returnColorName (j%4), skipCardPrefab));
-						break;
-					case 11:
-						deck.Add (new Card (i, returnColorName (j%4), revrsCardPrefab));
-						break;
-					case 12:
-						deck.Add (new Card (i, returnColorName (j%4), drawCardPrefab));
-						break;
-					case 13:
-						deck.Add (new Card (i, "Black", wildCardPrefab));
-						break;
-					case 14:
-						deck.Add (new Card (i, "Black", wildCardPrefab));
-						break;
-					default:
-						deck.Add (new Card (i, returnColorName (j%4), regCardPrefab));
-						break;						
-				}
 
-				if ((i == 0 || i>=13) && j >= 3)
-					break;
-			}
-		}
-		shuffle ();
+    private void DealCardsToPlayers()
+    {
+		Debug.Log("Dealing cards to players ..");
+        foreach (IPlayer player in players)
+        {
+			
+            for (int i = 0; i < 7; i++)
+            {
+                player.addCards(deck[0]);
+                deck.RemoveAt(0);
+            }
 
-		Card first = null;
-		if (deck [0].getNumb () < 10) {
-			first = deck [0];
-		}
-		else {
-			while (deck [0].getNumb () >= 10) {
-				deck.Add (deck [0]);
-				deck.RemoveAt (0);
-			}
-			first = deck [0];
-		}
-		discard.Add (first);
-		discardPileObj = first.loadCard (725, -325, GameObject.Find ("PlayUICanvas").transform);
-		deck.RemoveAt (0);
+			player.getCardsLeft();
 
-		foreach (IPlayer x in players) {
-			for (int i = 0; i < 7; i++) {
-				x.addCards (deck [0]);
-				deck.RemoveAt (0);
-			}
-		}
+        }
+    }
+
+    private static void SetupInitialDiscardPile()
+    {
+		Debug.Log("Setting up Discard pile ..");
+		/*
+		* 1-9 are regular
+		* 10 is skip
+		* 11 is reverse
+		* 12 is draw 2
+		* 13 is wild
+		* 14 is wild draw 4
+		*/
+
+        Card first = null;
+        if (deck[0].getNumb() < 10)
+        {
+            first = deck[0];
+        }
+        else
+        {
+            while (deck[0].getNumb() >= 10)
+            {
+                deck.Add(deck[0]);
+                deck.RemoveAt(0);
+            }
+            first = deck[0];
+        }
+        discard.Add(first);
+
+		// Adds card to Discard Pile based on Guide object
+		GameObject discardPileGuide = GameObject.Find("DiscardPile");
+		discardPileObj = first.loadCard(discardPileGuide, GameObject.Find("PlayUICanvas").transform);
+
+        deck.RemoveAt(0);
+    }
+
+    private void SetupDeck()
+    {
+		Debug.Log("Setting up deck ..");
+
+        for (int i = 0; i < 15; i++)
+        { //setups the deck by making cards
+            for (int j = 0; j < 8; j++)
+            {
+                switch (i)
+                {
+                    case 10:
+                        deck.Add(new Card(i, returnColorName(j % 4), skipCardPrefab));
+                        break;
+                    case 11:
+                        deck.Add(new Card(i, returnColorName(j % 4), revrsCardPrefab));
+                        break;
+                    case 12:
+                        deck.Add(new Card(i, returnColorName(j % 4), drawCardPrefab));
+                        break;
+                    case 13:
+                        deck.Add(new Card(i, "Black", wildCardPrefab));
+                        break;
+                    case 14:
+                        deck.Add(new Card(i, "Black", wildCardPrefab));
+                        break;
+                    default:
+                        deck.Add(new Card(i, returnColorName(j % 4), regCardPrefab));
+                        break;
+                }
+
+                if ((i == 0 || i >= 13) && j >= 3)
+                    break;
+            }
+        }
+    }
+
+    public void CleanOldGameData(){
+		Debug.Log("Cleaning Game Cache ..");
+		DeactivateAllPlayers();
+        discard.Clear(); // Clears cards in Discard array
+        deck.Clear(); 
+        players.Clear(); // Cleans players in array
 	}
 
-	
+    private void AddPlayers()
+    {
+        players.Add(new HumanPlayer("You"));
+        Debug.Log("Added human player: " + players[0].getName());
+
+        for (int i = 1; i <= numbOfAI; i++)
+        {
+            players.Add(new AiPlayer("AI " + i));
+
+            Debug.Log("New Player: " + players[i].getName());
+        }
+        Debug.Log("** Amount of current players: " + players.Count);
+    }
+
+    // ------ View Control ----------
+    public void DeactivateAllPlayers(){
+        Debug.Log("Deactivating All Player Views");
+
+        foreach (GameObject obj in playersView)
+        {
+            Transform aiTag = obj.transform.Find("Ai");
+            if (aiTag != null)
+            {
+                aiTag.gameObject.SetActive(false);
+            }
+        
+			obj.SetActive(false);
+		}
+    }
+
+	public void ActivatePlayers(){
+		Debug.Log("** Activating Player Views **");
+
+		int count = 0;
+		foreach (IPlayer player in players){
+			playersView[count].SetActive(true);
+			playersView[count].transform.Find("Name").GetComponent<Text>().text = players[count].getName();
+
+			if (player is HumanPlayer)
+			{
+				// Code to handle HumanPlayer
+				//Debug.Log("Current player is a HumanPlayer");
+				
+			}
+			else if (player is AiPlayer)
+			{
+				// Code to handle AiPlayer
+				//Debug.Log("Current player is an AiPlayer");
+				playersView[count].transform.Find("Ai").gameObject.SetActive(true);
+			}
+
+			count ++;
+   		}
+		Debug.Log("All players activated. Total: " + count);
+
+	}
+
+
+	// --------- Card Functionality --------------
 	string returnColorName (int numb) { //returns a color based on a number, used in setup
 		switch(numb) {
 		case 0: 
@@ -135,7 +235,10 @@ public class Control : MonoBehaviour {
 		}
 		return "";
 	}
+
 	void shuffle() { //shuffles the deck by changing cards around
+		Debug.Log("Shuffling cards ..");
+		
 		for (int i = 0; i < deck.Count; i++) {
 			Card temp = deck.ElementAt (i);
 			int posSwitch = Random.Range (0, deck.Count);
@@ -143,14 +246,24 @@ public class Control : MonoBehaviour {
 			deck [posSwitch] = temp;
 		}
 	}
+
 	public void recieveText(string text) { //updates the dialogue box
 		dialogueText.text += text + "\n";
 		contentHolder.GetComponent<RectTransform> ().localPosition = new Vector2 (0, contentHolder.GetComponent<RectTransform> ().sizeDelta.y);
+
+		// Todo: Add SignalR functionality to add text to GameLog DB
 	}
+
 	public void updateDiscPile(Card card) { //this changes the last card played. Top of the discard pile
 		discard.Add (card);
 		Destroy(discardPileObj);
-		discardPileObj=card.loadCard (725, -325, GameObject.Find ("Main").transform);
+
+		//discardPileObj=card.loadCard (725, -325, GameObject.Find ("Main").transform);
+
+		// Adds card to Discard Pile based on Guide object
+		GameObject discardPileGuide = GameObject.Find("DiscardPile");
+		discardPileObj = card.loadCard(discardPileGuide, GameObject.Find("PlayUICanvas").transform);
+		
 		discardPileObj.transform.SetSiblingIndex(9);
 	}
 
@@ -165,8 +278,8 @@ public class Control : MonoBehaviour {
 			int temp = players [i + 1].getCardsLeft();
 
 
-			Debug.Log("Player: " + aiPlayers [i].name +" | cards left: " + aiPlayers [i].transform.Find("CardsLeft").GetComponent<Text>().text);
-			aiPlayers [i].transform.Find("CardsLeft").GetComponent<Text>().text = temp.ToString();
+			Debug.Log("Player: " + playersView [i].name +" | cards left: " + playersView [i].transform.Find("CardsLeft").GetComponent<Text>().text);
+			playersView [i].transform.Find("CardsLeft").GetComponent<Text>().text = temp.ToString();
 		}
 		foreach (IPlayer i in players) {
 			if (i.getCardsLeft()==0) {
@@ -180,6 +293,8 @@ public class Control : MonoBehaviour {
 		return false;
 	}
 
+	// Update Method
+	/**/
 	void Update () { //this runs the players turns
 		
 		if (gameStarted){
@@ -239,6 +354,9 @@ public class Control : MonoBehaviour {
 			}
 			
 	}
+	/**/
+
+	// Card Functionality
 	public void startWild(string name) { //this starts the color chooser for the player to choose a color after playing a  wild
 		for (int i = 0; i < 4; i++) {
 			colors [i].SetActive (true);
@@ -252,7 +370,12 @@ public class Control : MonoBehaviour {
 			recieveText(string.Format("{0} played a wild, Color: {1}",name,colorsMatch[i]));
 
 			Destroy(discardPileObj);
-			discardPileObj=discard[discard.Count-1].loadCard (725, -325, GameObject.Find ("Main").transform);
+			//discardPileObj=discard[discard.Count-1].loadCard (725, -325, GameObject.Find ("Main").transform);
+
+			// Adds card to Discard Pile based on Guide object
+			GameObject discardPileGuide = GameObject.Find("DiscardPile");
+			discardPileObj=discard[discard.Count-1].loadCard(discardPileGuide, GameObject.Find("PlayUICanvas").transform);
+
 			discardPileObj.transform.SetSiblingIndex(9);
 			 
 			foreach (GameObject x in colors) {

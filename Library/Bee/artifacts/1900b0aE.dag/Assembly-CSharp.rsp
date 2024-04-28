@@ -380,6 +380,7 @@
 "Assets/Polytope Studio/Lowpoly_Demos/Environment_Free/Helpers/MouseLook.cs"
 "Assets/Polytope Studio/Lowpoly_Demos/Environment_Free/Helpers/PlayerMovement.cs"
 "Assets/Scripts/AiPlayer.cs"
+"Assets/Scripts/BroadcastService.cs"
 "Assets/Scripts/Card.cs"
 "Assets/Scripts/Control.cs"
 "Assets/Scripts/HumanPlayer.cs"

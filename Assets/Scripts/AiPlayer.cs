@@ -134,7 +134,11 @@ public class AiPlayer : MonoBehaviour, IPlayer {
 		return name;
 	}
 	public int getCardsLeft() { //returns cards left
-		Debug.Log ("-- Getting AI Player Cards -- ");
+		Debug.Log ("-- Getting " + this.name+ " Cards: " + handList.Count);			
+
+		string cardsLeft = string.Join(", ", handList.Select(card => card.ToString()).ToArray());
+		Debug.Log(cardsLeft);
+
 		return handList.Count;
 	}
 }
