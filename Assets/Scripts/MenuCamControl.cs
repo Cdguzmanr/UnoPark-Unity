@@ -87,6 +87,16 @@ public class MenuCamControl : MonoBehaviour
     }
 
 
+    public void ActivateRegisterLogin(){
+        if (loginCanvas.activeSelf){
+            loginCanvas.SetActive(false);
+            registerCanvas.SetActive(true);
+        } else {
+            registerCanvas.SetActive(false);
+            loginCanvas.SetActive(true);
+        }
+    }
+
     // Canvas Management -- Show or hide canvas 
         private void ActivateCanvas(GameObject canvas)
     {

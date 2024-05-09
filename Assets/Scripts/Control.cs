@@ -27,6 +27,9 @@ public class Control : MonoBehaviour {
 	string[] colorsMatch = new string[4]{"Yellow","Green","Blue","Red"};
 
 	public GameObject[] playersView = new GameObject[5]; //
+
+	public GameObject selectColorCanvas;
+
 	public GameObject colorText;
 	public GameObject deckGO;
 	public GameObject pauseCan;
@@ -46,7 +49,7 @@ public class Control : MonoBehaviour {
     { //this does all the setup. Makes the human and ai players. sets the deck and gets the game ready
 
         Debug.Log(" *********** | Game Started | *********** ");
-        BroadcastService.StartGame(); // Connect to SignalR
+        SignalRControl.BroadcastMessage("Game Started"); // Connect to SignalR
 
         // Cleans old data
         CleanOldGameData();
@@ -65,6 +68,73 @@ public class Control : MonoBehaviour {
         DealCardsToPlayers();
 
     }
+
+	// Update Method
+	/**/
+	void Update () { // This runs the players' turns
+
+		if (gameStarted) { // Check if the game has started
+
+			bool win = updateCardsLeft(); // Check if any player has won
+
+			if (win)
+				return; // If a player has won, exit the Update function
+
+			// Check if the current player is a HumanPlayer
+			if (players[where] is HumanPlayer) { 
+				// Check if the current player's skipStatus is true
+				if (players[where].skipStatus) {
+					players[where].skipStatus = false; // Reset skipStatus
+					where += reverse ? -1 : 1; // Move to the next player based on the game direction
+					if (where >= players.Count)
+						where = 0; // Wrap around if reached the end
+					else if (where < 0)
+						where = players.Count - 1; // Wrap around if reached the beginning
+					return; // Exit the Update function
+				}
+				this.enabled = false; // Disable this script temporarily
+				IPlayer temp = players[where]; // Store the current player
+				deckGO.GetComponent<Button>().onClick.RemoveAllListeners(); // Remove all click listeners from a UI button
+				deckGO.GetComponent<Button>().onClick.AddListener(() => {
+					draw(1, temp); // Draw a card for the current player
+					((HumanPlayer)temp).recieveDrawOnTurn(); // Notify the HumanPlayer about the draw
+				});
+				where += reverse ? -1 : 1; // Move to the next player based on the game direction
+				players[where + (reverse ? 1 : -1)].turn(); // Trigger the next player's turn
+			}
+			
+			// Check if the current player is not null
+			else if (players[where] != null) {
+				// Check if the current player's skipStatus is true
+				if (players[where].skipStatus) {
+					players[where].skipStatus = false; // Reset skipStatus
+					where += reverse ? -1 : 1; // Move to the next player based on the game direction
+					if (where >= players.Count)
+						where = 0; // Wrap around if reached the end
+					else if (where < 0)
+						where = players.Count - 1; // Wrap around if reached the beginning
+					return; // Exit the Update function
+				}
+				timer += Time.deltaTime; // Increment timer based on real-time
+				if (timer < 2.2)
+					return; // Wait for 2.2 seconds before continuing the turn
+				this.enabled = false; // Disable this script temporarily
+				timer = 0; // Reset timer
+				where += reverse ? -1 : 1; // Move to the next player based on the game direction
+				players[where + (reverse ? 1 : -1)].turn(); // Trigger the next player's turn
+			}
+
+			else // If none of the above conditions are met
+				where += reverse ? -1 : 1; // Move to the next player based on the game direction
+
+			if (where >= players.Count)
+				where = 0; // Wrap around if reached the end
+			else if (where < 0)
+				where = players.Count - 1; // Wrap around if reached the beginning
+		}
+	}
+
+	/**/
 
 
     private void DealCardsToPlayers()
@@ -114,7 +184,7 @@ public class Control : MonoBehaviour {
 
 		// Adds card to Discard Pile based on Guide object
 		GameObject discardPileGuide = GameObject.Find("DiscardPile");
-		discardPileObj = first.loadCard(discardPileGuide, GameObject.Find("PlayUICanvas").transform);
+		discardPileObj = first.loadCard(discardPileGuide, GameObject.Find("DiscardPile").transform);
 
         deck.RemoveAt(0);
     }
@@ -161,6 +231,7 @@ public class Control : MonoBehaviour {
         discard.Clear(); // Clears cards in Discard array
         deck.Clear(); 
         players.Clear(); // Cleans players in array
+		selectColorCanvas.SetActive(false);
 	}
 
     private void AddPlayers()
@@ -262,23 +333,18 @@ public class Control : MonoBehaviour {
 
 		// Adds card to Discard Pile based on Guide object
 		GameObject discardPileGuide = GameObject.Find("DiscardPile");
-		discardPileObj = card.loadCard(discardPileGuide, GameObject.Find("PlayUICanvas").transform);
+		discardPileObj = card.loadCard(discardPileGuide, GameObject.Find("DiscardPile").transform);
 		
 		discardPileObj.transform.SetSiblingIndex(9);
 	}
 
 	public bool updateCardsLeft() { //this updates the number below each ai, so the player knows how many cards they have left
 		
-		Debug.Log(" ---- Updating Cards Left ----- ");
-		for (int i = 0; i < players.Count - 1; i++) {
+		//Debug.Log(" ---- Updating Cards Left ----- ");
+		for (int i = 0; i < players.Count; i++) {
+			int temp = players [i].getCardsLeft();
 
-			Debug.Log(" Got into for loop. N: " + i);
-			Debug.Log("Players list lenght:" + players.Count);
-
-			int temp = players [i + 1].getCardsLeft();
-
-
-			Debug.Log("Player: " + playersView [i].name +" | cards left: " + playersView [i].transform.Find("CardsLeft").GetComponent<Text>().text);
+			//Debug.Log("Player: " + playersView [i].name +" | cards left: " + playersView [i].transform.Find("CardsLeft").GetComponent<Text>().text);
 			playersView [i].transform.Find("CardsLeft").GetComponent<Text>().text = temp.ToString();
 		}
 		foreach (IPlayer i in players) {
@@ -293,76 +359,19 @@ public class Control : MonoBehaviour {
 		return false;
 	}
 
-	// Update Method
-	/**/
-	void Update () { //this runs the players turns
-		
-		if (gameStarted){
-			bool win = updateCardsLeft ();
-
-			if (win)
-				return;
-
-			if (players [where] is HumanPlayer) {
-				if (players [where].skipStatus) {
-					players [where].skipStatus = false;
-					where += reverse ? -1 : 1;
-					if (where >= players.Count)
-						where = 0;
-					else if (where < 0)
-						where = players.Count - 1;
-					return;
-				}
-				this.enabled = false;
-				IPlayer temp = players [where];
-				deckGO.GetComponent<Button> ().onClick.RemoveAllListeners ();
-				deckGO.GetComponent<Button> ().onClick.AddListener (() => {
-					draw (1, temp);
-					((HumanPlayer)temp).recieveDrawOnTurn();
-				});
-				where+=reverse?-1:1;
-				players [where+(reverse?1:-1)].turn ();
-			}
-			
-			else if (players [where] != null) {
-				if (players [where].skipStatus) {
-					players [where].skipStatus = false;
-					where += reverse ? -1 : 1;
-					if (where >= players.Count)
-						where = 0;
-					else if (where < 0)
-						where = players.Count - 1;
-					return;
-				}
-				timer += Time.deltaTime;
-				if (timer < 2.2)
-					return;
-				this.enabled = false;
-				timer = 0;
-				where+=reverse?-1:1;
-				players [where+(reverse?1:-1)].turn ();
-			}
-
-			else
-				where += reverse ? -1 : 1;
-		
-
-			if (where >= players.Count)
-				where = 0;
-			else if (where < 0)
-				where = players.Count - 1;
-			}
-			
-	}
-	/**/
+	
 
 	// Card Functionality
 	public void startWild(string name) { //this starts the color chooser for the player to choose a color after playing a  wild
+		
+		selectColorCanvas.SetActive(true);
+		
 		for (int i = 0; i < 4; i++) {
-			colors [i].SetActive (true);
+			//colors [i].SetActive (true);
+			colors[i].GetComponent<Button>().onClick.RemoveAllListeners();
 			addWildListeners (i, name);
 		}
-		colorText.SetActive (true);
+		//colorText.SetActive (true);
 	}
 	public void addWildListeners(int i, string name) { //this is ran from the start wild. It sets each color option as a button and sets the onclick events
 		colors [i].GetComponent<Button> ().onClick.AddListener (() => {
@@ -374,16 +383,20 @@ public class Control : MonoBehaviour {
 
 			// Adds card to Discard Pile based on Guide object
 			GameObject discardPileGuide = GameObject.Find("DiscardPile");
-			discardPileObj=discard[discard.Count-1].loadCard(discardPileGuide, GameObject.Find("PlayUICanvas").transform);
-
+			discardPileObj=discard[discard.Count-1].loadCard(discardPileGuide, GameObject.Find("DiscardPile").transform);
 			discardPileObj.transform.SetSiblingIndex(9);
-			 
-			foreach (GameObject x in colors) {
-				x.SetActive (false);
-				x.GetComponent<Button>().onClick.RemoveAllListeners();
-			}
-			colorText.SetActive (false);
-			this.enabled=true;
+			
+			
+			// Deactivates colors
+			// foreach (GameObject x in colors) {
+			// 	x.SetActive (false);
+			// 	x.GetComponent<Button>().onClick.RemoveAllListeners();
+			// }
+			// colorText.SetActive (false);
+
+			// Clear listeners and hide canvas
+			selectColorCanvas.SetActive(false);
+			this.enabled = true;
 		});
 	}
 	public void draw(int amount, IPlayer who) { //gives cards to the players. Players can ask to draw or draw will actrivate from special cards
