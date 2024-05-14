@@ -52,6 +52,8 @@ public class HumanPlayer : MonoBehaviour, IPlayer {
 			temp.GetComponent<Button>().onClick.RemoveAllListeners();
 			Destroy (temp);
 			turnEnd(where);
+
+
 		});
 	}
 	public void addCards(Card other) { //recieves cards to add to the hand
@@ -67,15 +69,19 @@ public class HumanPlayer : MonoBehaviour, IPlayer {
 
 		cont.playerHand.GetComponent<RectTransform> ().localPosition = new Vector2 (0, 0);
 
+
+		// After turn ends, remove all action buttons from cards, so they dont trigger play.
 		for(int i=cont.playerHand.transform.childCount-1;i>=0;i--) {
 			cont.playerHand.transform.GetChild(i).GetComponent<Button>().onClick.RemoveAllListeners();
 			cont.playerHand.transform.GetChild (i).GetChild (3).gameObject.SetActive (false);
 		}
+
 		if (drew) {
 			cont.GetComponent<Control> ().enabled = true;
 			cont.recieveText (string.Format ("{0} drew a card", name));
 			cont.deckGO.GetComponent<Button> ().onClick.RemoveAllListeners ();
 		}
+
 		else {	
 			int specNumb = handList [where].getNumb ();	
 			if (playedWild) {
@@ -85,6 +91,8 @@ public class HumanPlayer : MonoBehaviour, IPlayer {
 				if (specNumb == 14)
 					cont.specialCardPlay (this, 14);
 			}
+
+			// --------------------------- Add SignalR method here -> Send what card was played to server
 			else {
 				if (specNumb < 10) {
 					cont.recieveText (string.Format ("{0} played a {1} {2}", name, handList [where].getColor (), handList [where].getNumb ()));
@@ -115,10 +123,10 @@ public class HumanPlayer : MonoBehaviour, IPlayer {
 		return name;
 	}
 	public int getCardsLeft() { //gets how many cards are left in the hand
-		Debug.Log ("-- Getting " + this.name+ " Cards: " + handList.Count);		
+		//Debug.Log ("-- Getting " + this.name+ " Cards: " + handList.Count);		
 
 		string cardsLeft = string.Join(", ", handList.Select(card => card.ToString()).ToArray());
-		Debug.Log(cardsLeft);
+		Debug.Log(this.name + " Cards: " + cardsLeft);
 
 		return handList.Count;
 	}

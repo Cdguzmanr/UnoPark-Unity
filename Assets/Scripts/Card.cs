@@ -31,7 +31,7 @@ public class Card : MonoBehaviour {
 	// Override ToString method
     public override string ToString()
     {
-        return $"Card: {color} {number}";
+        return $"{color} {number}";
     }
 
 	public GameObject loadCard(GameObject guideObject, Transform parent)

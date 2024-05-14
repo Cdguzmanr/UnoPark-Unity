@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using UnityEngine;
 
-public class User : MonoBehaviour
+public class User
 {
         [Required]
         [DisplayName("First Name")]
@@ -20,4 +20,23 @@ public class User : MonoBehaviour
         public string Password { get; set; }
 
         public string FullName { get { return FirstName + " " + LastName; } }
+}
+
+public class UserLoginDto
+{
+        [Required]
+        public string Username { get; set;}
+        [Required]
+        public string Password { get; set;}
+
+
+        public UserLoginDto(string username, string password){
+                Username = username;
+                Password = password;
+        }
+        
+        public override string ToString()
+        {
+                return $"{Username} {Password}";
+        }
 }

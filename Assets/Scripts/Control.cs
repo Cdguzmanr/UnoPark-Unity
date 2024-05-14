@@ -53,6 +53,7 @@ public class Control : MonoBehaviour {
 
         // Cleans old data
         CleanOldGameData();
+		this.enabled = true;
 
         // ---- Add Users ---- //
         AddPlayers();
@@ -82,16 +83,11 @@ public class Control : MonoBehaviour {
 
 			// Check if the current player is a HumanPlayer
 			if (players[where] is HumanPlayer) { 
+
 				// Check if the current player's skipStatus is true
-				if (players[where].skipStatus) {
-					players[where].skipStatus = false; // Reset skipStatus
-					where += reverse ? -1 : 1; // Move to the next player based on the game direction
-					if (where >= players.Count)
-						where = 0; // Wrap around if reached the end
-					else if (where < 0)
-						where = players.Count - 1; // Wrap around if reached the beginning
-					return; // Exit the Update function
-				}
+				if (CheckPlayerSkip())
+					return;
+
 				this.enabled = false; // Disable this script temporarily
 				IPlayer temp = players[where]; // Store the current player
 				deckGO.GetComponent<Button>().onClick.RemoveAllListeners(); // Remove all click listeners from a UI button
@@ -104,28 +100,39 @@ public class Control : MonoBehaviour {
 			}
 			
 			// Check if the current player is not null
-			else if (players[where] != null) {
-				// Check if the current player's skipStatus is true
-				if (players[where].skipStatus) {
-					players[where].skipStatus = false; // Reset skipStatus
-					where += reverse ? -1 : 1; // Move to the next player based on the game direction
-					if (where >= players.Count)
-						where = 0; // Wrap around if reached the end
-					else if (where < 0)
-						where = players.Count - 1; // Wrap around if reached the beginning
-					return; // Exit the Update function
-				}
-				timer += Time.deltaTime; // Increment timer based on real-time
-				if (timer < 2.2)
-					return; // Wait for 2.2 seconds before continuing the turn
-				this.enabled = false; // Disable this script temporarily
-				timer = 0; // Reset timer
-				where += reverse ? -1 : 1; // Move to the next player based on the game direction
-				players[where + (reverse ? 1 : -1)].turn(); // Trigger the next player's turn
-			}
+			else if (players[where] is AiPlayer)
+            {
+                // Check if the current player's skipStatus is true
+                if (CheckPlayerSkip())
+					return;
 
-			else // If none of the above conditions are met
+                timer += Time.deltaTime; // Increment timer based on real-time
+                if (timer < 2.2)
+                    return; // Wait for 2.2 seconds before continuing the turn
+                this.enabled = false; // Disable this script temporarily
+                timer = 0; // Reset timer
+                where += reverse ? -1 : 1; // Move to the next player based on the game direction
+                players[where + (reverse ? 1 : -1)].turn(); // Trigger the next player's turn
+            }
+
+			else if (players[where] is OnlinePlayer)
+            {
+                // Check if the current player's skipStatus is true
+                if (CheckPlayerSkip())
+					return;
+
+                timer += Time.deltaTime; // Increment timer based on real-time
+                if (timer < 2.2)
+                    return; // Wait for 2.2 seconds before continuing the turn
+
+                this.enabled = false; // Disable this script temporarily
+                timer = 0; // Reset timer
+                where += reverse ? -1 : 1; // Move to the next player based on the game direction
+                players[where + (reverse ? 1 : -1)].turn(); // Trigger the next player's turn
+            }
+            else // If none of the above conditions are met
 				where += reverse ? -1 : 1; // Move to the next player based on the game direction
+
 
 			if (where >= players.Count)
 				where = 0; // Wrap around if reached the end
@@ -134,8 +141,22 @@ public class Control : MonoBehaviour {
 		}
 	}
 
-	/**/
-
+    private bool CheckPlayerSkip()
+    {
+        if (players[where].skipStatus)
+        {
+            players[where].skipStatus = false; // Reset skipStatus
+            where += reverse ? -1 : 1; // Move to the next player based on the game direction
+            if (where >= players.Count)
+                where = 0; // Wrap around if reached the end
+            else if (where < 0)
+                where = players.Count - 1; // Wrap around if reached the beginning
+            
+			return true; // Exit the Update function
+        }
+		return false;
+    }
+    /**/
 
     private void DealCardsToPlayers()
     {
@@ -153,7 +174,6 @@ public class Control : MonoBehaviour {
 
         }
     }
-
     private static void SetupInitialDiscardPile()
     {
 		Debug.Log("Setting up Discard pile ..");
@@ -188,7 +208,6 @@ public class Control : MonoBehaviour {
 
         deck.RemoveAt(0);
     }
-
     private void SetupDeck()
     {
 		Debug.Log("Setting up deck ..");
@@ -227,10 +246,22 @@ public class Control : MonoBehaviour {
 
     public void CleanOldGameData(){
 		Debug.Log("Cleaning Game Cache ..");
-		DeactivateAllPlayers();
+
+		// Re-start default values
+		reverse = false;
+		where = 0;
+		dialogueText.text = "Welcome to the Game!\n";
+		contentHolder.GetComponent<RectTransform>().localPosition = new Vector2(0, 0);
+
+		// Clear data in arrays
+		players.Clear (); // Cleans players in array
         discard.Clear(); // Clears cards in Discard array
         deck.Clear(); 
-        players.Clear(); // Cleans players in array
+
+		// Re-start Game View
+		DeactivateAllPlayers();
+		DestroyPlayerHand(); // Destroy the card objects in the Hand view
+		Destroy(discardPileObj);
 		selectColorCanvas.SetActive(false);
 	}
 
@@ -342,9 +373,11 @@ public class Control : MonoBehaviour {
 		
 		//Debug.Log(" ---- Updating Cards Left ----- ");
 		for (int i = 0; i < players.Count; i++) {
-			int temp = players [i].getCardsLeft();
+			int temp = players [i].getCardsLeft(); // Get cards left from array of IPlayers 
 
 			//Debug.Log("Player: " + playersView [i].name +" | cards left: " + playersView [i].transform.Find("CardsLeft").GetComponent<Text>().text);
+			
+			// Updates the Player View to display new Cards left 
 			playersView [i].transform.Find("CardsLeft").GetComponent<Text>().text = temp.ToString();
 		}
 		foreach (IPlayer i in players) {
@@ -358,8 +391,6 @@ public class Control : MonoBehaviour {
 		}
 		return false;
 	}
-
-	
 
 	// Card Functionality
 	public void startWild(string name) { //this starts the color chooser for the player to choose a color after playing a  wild
@@ -485,24 +516,19 @@ public class Control : MonoBehaviour {
 	public void exit() { //quits the app
 		Application.Quit ();	
 	}
-	public void playAgain() { //resets everything after a game has been played
+	public void playAgain()
+    { //resets everything after a game has been played
+
 		this.enabled = false;
-		reverse = false;
-		players.Clear ();
-		dialogueText.text = "";
-		contentHolder.GetComponent<RectTransform> ().localPosition = new Vector2 (0, 0);
-		endCan.SetActive (false);
-		for (int i = playerHand.transform.childCount - 1; i >= 0; i--) {
-			Destroy (playerHand.transform.GetChild (i).gameObject);
-		}
-		Destroy(discardPileObj);
-		where = 0;
-		StartGame();
-		this.enabled = true;
-	}
+        endCan.SetActive(false);
+        StartGame();
+    }
 
-
-
-
-
+    private void DestroyPlayerHand()
+    {
+        for (int i = playerHand.transform.childCount - 1; i >= 0; i--)
+        {
+            Destroy(playerHand.transform.GetChild(i).gameObject);
+        }
+    }
 }

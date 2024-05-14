@@ -17,9 +17,13 @@ public class MenuCamControl : MonoBehaviour
     public GameObject mainMenuCanvas;
     public GameObject loginCanvas;
     public GameObject registerCanvas;
+    public GameObject playersCanvas;
+    public GameObject onlineGameCanvas;
+    public GameObject loadGameCanvas;
+
     public GameObject playCanvas;
     public GameObject pauseCanvas;
-    public GameObject playersCanvas;
+    
     public GameObject winnerCanvas;
 
     public GameObject[] toggles = new GameObject[4]; // Set the AI Players from Menu
@@ -86,7 +90,6 @@ public class MenuCamControl : MonoBehaviour
         }
     }
 
-
     public void ActivateRegisterLogin(){
         if (loginCanvas.activeSelf){
             loginCanvas.SetActive(false);
@@ -119,9 +122,11 @@ public class MenuCamControl : MonoBehaviour
         DeactivateCanvas(mainMenuCanvas);
         DeactivateCanvas(loginCanvas);
         DeactivateCanvas(registerCanvas);
-        DeactivateCanvas(playCanvas);
-        DeactivateCanvas(pauseCanvas);
         DeactivateCanvas(playersCanvas);
+        DeactivateCanvas(loadGameCanvas);
+        DeactivateCanvas(onlineGameCanvas);
+        DeactivateCanvas(playCanvas);
+        DeactivateCanvas(pauseCanvas);        
         DeactivateCanvas(winnerCanvas);
         Debug.Log("--- All Canvas Deactivated ---");
     }
@@ -136,7 +141,6 @@ public class MenuCamControl : MonoBehaviour
         //Debug.Log("-------------- Camera Trigger activated. ----- \nCurrent object: " + this.tag);
         
 	}
-
 
     // Game Management -------------------------------------------------------------
 
@@ -155,5 +159,32 @@ public class MenuCamControl : MonoBehaviour
         Control.gameStarted = true;
 	}
     
+
+
+    // ---------- Button Click listeners:
+    public void AiPlayersMenu()
+    {
+        DeactivateAllCanvas();
+        ActivateCanvas(playersCanvas);
+        Debug.Log("Players Menu activated.");
+    }   
+
+    public void LoadGameMenu()
+    {
+        DeactivateAllCanvas();
+        ActivateCanvas(loadGameCanvas);
+
+        Debug.Log("Load Game Menu activated.");
+    }   
+
+    public void PlayOnlineMenu()
+    {
+        DeactivateAllCanvas();
+        ActivateCanvas(onlineGameCanvas);
+
+        Debug.Log("Play Online Menu activated.");
+    }   
+
+
 
 }
